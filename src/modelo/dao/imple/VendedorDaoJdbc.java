@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +19,7 @@ import modelo.entidades.Vendedor;
 
 public class VendedorDaoJdbc implements VendedorDao{
 	private Connection conn;
+	
 	public VendedorDaoJdbc(Connection conn) {
 		this.conn = conn;
 	}
@@ -26,8 +29,34 @@ public class VendedorDaoJdbc implements VendedorDao{
 	}
 
 	@Override
-	public void inserir(Vendedor d) {
-		// TODO Auto-generated method stub
+	public void inserir(Vendedor v) {
+		PreparedStatement ps = null;
+		ResultSet r = null;
+		try {
+			ps = conn.prepareStatement("INSERT INTO seller "
+					+"(Name, Email, BirthDate, BaseSalary, DepartmentId)"
+					+"VALUES "
+					+"(?,?,?,?,?) ", Statement.RETURN_GENERATED_KEYS);
+			ps.setString(1, v.getNome());
+			ps.setString(2, v.getEmail());
+			ps.setDate(3, new java.sql.Date((v.getDataNasc().getTime())));
+			ps.setDouble(4, v.getSalarioBase());
+			ps.setInt(5, v.getDepartamento().getId());
+			int adicionados = ps.executeUpdate();
+
+			if(adicionados > 0) {
+				 r = ps.getGeneratedKeys();
+				while(r.next()) {
+					v.setId(r.getInt(1));
+				}
+			}
+			
+		}catch(SQLException e) {
+			throw new DbException(e.getMessage());
+		}finally {
+			DB.fecharResultSet(r);
+			DB.fecharStatement(ps);
+		}
 		
 	}
 
