@@ -1,6 +1,6 @@
 package aplicacao;
 
-import java.util.Date;
+import java.util.List;
 
 import model.dao.FabricaDao;
 import model.dao.VendedorDao;
@@ -13,8 +13,12 @@ public class Programa {
 		
 	VendedorDao vd = FabricaDao.criarVendedorDao();
 	Vendedor v = vd.encontrarPorId(3);
-	System.out.println("=== Teste1: Encontrar por Id ====="); 
+	System.out.println("=== Teste 1: Encontrar por Id ====="); 
 	System.out.println(v);
+	System.out.println("\n=== Teste 2: Encontrar por Departamento ====="); 
+	Departamento departamento = new Departamento(2, null);
+	List<Vendedor> lista = vd.encontrarPorDepartamento(departamento);
+	lista.forEach(System.out::println);
 	}
 
 }
