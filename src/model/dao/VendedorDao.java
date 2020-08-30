@@ -9,6 +9,6 @@ public interface VendedorDao {
 	void inserir(Vendedor d);
 	void atualizar(Vendedor d);
 	void deletarPorId(Integer id);
-	Vendedor encaontraPorId(Integer id);
+	Vendedor encontrarPorId(Integer id);
 	List<Vendedor> encontraTodos();
 }
