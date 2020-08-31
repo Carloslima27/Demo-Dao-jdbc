@@ -82,7 +82,7 @@ public class DepartamentoDaoJdbc implements DepartamentoDao{
 		PreparedStatement ps = null;
 		ResultSet r = null;
 		try {
-			ps = conn.prepareStatement("SELECT (Name, Id) FROM Department "+"Where Id = ? ");
+			ps = conn.prepareStatement("SELECT * from Department "+"WHERE Id = ? ");
 			ps.setInt(1, id);
 			r = ps.executeQuery();
 			Departamento dep = new Departamento();
@@ -107,8 +107,9 @@ public class DepartamentoDaoJdbc implements DepartamentoDao{
 		ps = conn.prepareStatement("SELECT * FROM Department");
 		r = ps.executeQuery();
 		List<Departamento> lista = new ArrayList<>();
-		Departamento dep = new Departamento();
+		
 		while(r.next()) {
+			Departamento dep = new Departamento();
 			dep.setId(r.getInt("Id"));
 			dep.setNome(r.getString("Name"));
 			lista.add(dep);
