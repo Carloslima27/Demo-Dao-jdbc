@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +30,7 @@ public class VendedorDaoJdbc implements VendedorDao{
 	@Override
 	public void inserir(Vendedor v) {
 		PreparedStatement ps = null;
-		ResultSet r = null;
+		 
 		try {
 			ps = conn.prepareStatement("INSERT INTO seller "
 					+"(Name, Email, BirthDate, BaseSalary, DepartmentId)"
@@ -45,30 +44,65 @@ public class VendedorDaoJdbc implements VendedorDao{
 			int adicionados = ps.executeUpdate();
 
 			if(adicionados > 0) {
-				 r = ps.getGeneratedKeys();
+			ResultSet r = ps.getGeneratedKeys();
 				while(r.next()) {
 					v.setId(r.getInt(1));
 				}
+				DB.fecharResultSet(r);
+			}else {
+				throw new DbException("Erro inesperado! nenhum vendedor adicionado");
 			}
 			
 		}catch(SQLException e) {
 			throw new DbException(e.getMessage());
 		}finally {
-			DB.fecharResultSet(r);
+			
 			DB.fecharStatement(ps);
 		}
 		
 	}
 
 	@Override
-	public void atualizar(Vendedor d) {
-		// TODO Auto-generated method stub
+	public void atualizar(Vendedor v) {
+		PreparedStatement ps = null;
+		try {
+			ps = conn.prepareStatement("UPDATE seller " 
+					+ "SET Name = ?, Email = ?, BirthDate = ?, BaseSalary = ?, DepartmentId = ? "
+					+ "WHERE Id = ? ");
+			ps.setString(1, v.getNome());
+			ps.setString(2, v.getEmail());
+			ps.setDate(3, new java.sql.Date(v.getDataNasc().getTime()));
+			ps.setDouble(4, v.getSalarioBase());
+			ps.setInt(5, v.getDepartamento().getId());
+			ps.setInt(6, v.getId());
+			ps.executeUpdate();
+			
+			
+		}catch(SQLException e) {
+			throw new DbException(e.getMessage()); 
+		}finally {
+			DB.fecharStatement(ps);
+		}
 		
 	}
 
 	@Override
 	public void deletarPorId(Integer id) {
-		// TODO Auto-generated method stub
+		PreparedStatement ps = null;
+		try {
+			ps = conn.prepareStatement("DELETE FROM seller " + 
+					"WHERE Id = ? "   );
+			ps.setInt(1, id);
+			int deletadas = ps.executeUpdate();
+			if(deletadas == 0) {
+				throw new DbException("Id não existe!");
+			}
+			
+		}catch(SQLException e) {
+			throw new DbException(e.getMessage());
+		}finally {
+			DB.fecharStatement(ps);
+		}
 		
 	}
 
@@ -127,7 +161,7 @@ public class VendedorDaoJdbc implements VendedorDao{
 			ps = conn.prepareStatement("SELECT seller.*,department.Name as DepName "+
 					"FROM seller INNER JOIN department "+
 					"ON seller.DepartmentId = department.Id "+
-					"ORDER BY Name ");
+					"ORDER BY Id ");
 		r = ps.executeQuery();
 		List<Vendedor> lista = new ArrayList<>();
 		Map<Integer, Departamento> map = new HashMap<>();

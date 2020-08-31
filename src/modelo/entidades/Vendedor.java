@@ -27,6 +27,16 @@ public class Vendedor implements Serializable{
 		this.departamento = departamento;
 	}
 
+	public Vendedor(Integer id, String nome, String email, Date dataNasc, Double salarioBase,
+			Departamento departamento) {
+		this.id = id;
+		this.nome = nome;
+		this.email = email;
+		this.dataNasc = dataNasc;
+		this.salarioBase = salarioBase;
+		this.departamento = departamento;
+	}
+
 	public Integer getId() {
 		return id;
 	}

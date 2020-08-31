@@ -27,8 +27,19 @@ public class Programa {
 	lista.forEach(System.out::println);
 	System.out.println("\n=== Teste 4: Inserir vendedor ====="); 
 	Vendedor vendedor = new Vendedor("João", "João@gmail.com", new Date(), 3000.00, new Departamento(1, null) );
-	vd.inserir(vendedor);
+	//vd.inserir(vendedor);
 	System.out.println(vendedor);
+	System.out.println("\n=== Teste 5: Atualizar vendedor ====="); 
+	vendedor = new Vendedor(8, "Pedro", "Pedro@gmail.com", new Date(), 200.00, new Departamento(4, null));
+	vd.atualizar(vendedor);
+	lista = vd.encontraTodos();
+	lista.forEach(System.out::println);
+	System.out.println("\n=== Teste 5: Deletar vendedor ====="); 
+	vd.deletarPorId(9);
+	lista = vd.encontraTodos();
+	lista.forEach(System.out::println);
+	
+	
 	
 	}
 
